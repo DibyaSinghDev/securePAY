@@ -8,6 +8,7 @@ public class User {
     private String password;
     private String accountNumber;
     private double balance;
+    private String profileImage;
 
     public User() {
     }
@@ -80,4 +81,5 @@ public class User {
             double balance) {
         this.balance = balance;
     }
+    
 }
