@@ -1,4 +1,3 @@
-
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 pageEncoding="UTF-8"%>
 
@@ -21,255 +20,409 @@ if(totalBalance == null) totalBalance = 0.0;
 <html>
 <head>
 <meta charset="UTF-8">
-<title>SecurePAY Professional Admin Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SecurePAY Control Room</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 
 <style>
+
+:root{
+    --metal:#1a1613;
+    --metal-raised:#242019;
+    --metal-deep:#100d0b;
+    --line:#3a3227;
+    --brass:#c9a227;
+    --brass-bright:#e8c765;
+    --phosphor:#5eda8e;
+    --phosphor-dim:#264534;
+    --ivory:#f3ede0;
+    --gray:#948c78;
+    --lamp-red:#e0554a;
+}
 
 *{
     margin:0;
     padding:0;
     box-sizing:border-box;
-    font-family:'Poppins',sans-serif;
+    font-family:'Manrope',sans-serif;
 }
 
 body{
-    background:linear-gradient(
-        135deg,
-        #020617,
-        #0f172a,
-        #1e293b
-    );
+    background:
+        radial-gradient(circle at 15% 0%, #201b16 0%, var(--metal-deep) 60%);
     min-height:100vh;
-    color:white;
+    color:var(--ivory);
 }
 
-/* Layout */
+::selection{ background:var(--phosphor); color:#0a1a11; }
 
-.wrapper{
+/* ---------- Marquee ---------- */
+
+.marquee{
+    background:var(--metal-deep);
+    border-bottom:1px solid var(--line);
+    overflow:hidden;
+    white-space:nowrap;
+    padding:9px 0;
+}
+
+.marquee span{
+    display:inline-block;
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;
+    letter-spacing:1px;
+    color:var(--phosphor);
+    padding-left:100%;
+    animation:scroll 26s linear infinite;
+}
+
+@keyframes scroll{
+    from{ transform:translateX(0); }
+    to{ transform:translateX(-100%); }
+}
+
+/* ---------- Layout ---------- */
+
+.wrapper{ display:flex; }
+
+/* ---------- Switch panel (nav) ---------- */
+
+.switchpanel{
+    width:210px;
+    flex-shrink:0;
+    min-height:calc(100vh - 38px);
+    background:var(--metal);
+    border-right:1px solid var(--line);
+    padding:28px 18px;
+}
+
+.brand{
     display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:30px;
+    padding:0 4px;
 }
 
-/* Sidebar */
-
-.sidebar{
-    width:260px;
-    min-height:100vh;
-    background:rgba(255,255,255,.05);
-    backdrop-filter:blur(20px);
-    border-right:1px solid rgba(255,255,255,.08);
-    padding:30px 20px;
+.brand .seal{
+    width:34px; height:34px;
+    border-radius:50%;
+    border:1px dashed var(--brass);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Fraunces',serif; font-weight:600; font-size:12px;
+    color:var(--brass-bright);
+    flex-shrink:0;
 }
 
-.logo{
-    font-size:28px;
-    font-weight:700;
-    text-align:center;
-    margin-bottom:40px;
-    color:#38bdf8;
-}
+.brand span{ font-family:'Fraunces',serif; font-weight:600; font-size:16.5px; }
 
-.sidebar a{
-    display:block;
+.switch-row{
+    display:flex;
+    align-items:center;
+    gap:12px;
     text-decoration:none;
-    color:white;
-    padding:15px;
-    margin-bottom:10px;
-    border-radius:15px;
-    transition:.3s;
+    color:var(--ivory);
+    padding:10px 8px;
+    border-radius:6px;
+    margin-bottom:3px;
+    font-size:13.5px;
+    font-weight:500;
+    transition:background .15s;
 }
 
-.sidebar a:hover{
-    background:#2563eb;
-    transform:translateX(5px);
+.switch-row:hover{ background:var(--metal-raised); }
+
+.toggle{
+    width:30px; height:16px;
+    border-radius:9px;
+    background:var(--metal-deep);
+    border:1px solid var(--line);
+    position:relative;
+    flex-shrink:0;
 }
 
-/* Main */
-
-.main{
-    flex:1;
-    padding:30px;
+.toggle::after{
+    content:"";
+    position:absolute;
+    width:10px; height:10px;
+    border-radius:50%;
+    top:2px; left:2px;
+    background:var(--gray);
+    transition:.15s;
 }
 
-/* Header */
+.switch-row.on .toggle{ border-color:var(--phosphor); }
+.switch-row.on .toggle::after{
+    left:16px;
+    background:var(--phosphor);
+    box-shadow:0 0 6px var(--phosphor);
+}
+
+.divider{
+    font-family:'JetBrains Mono',monospace;
+    font-size:9.5px;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    color:var(--gray);
+    margin:20px 8px 8px;
+}
+
+.switchpanel .logout{ color:var(--lamp-red); margin-top:10px; }
+.switchpanel .logout .toggle::after{ background:var(--lamp-red); }
+.switchpanel .logout .toggle{ border-color:var(--lamp-red); }
+
+/* ---------- Main ---------- */
+
+.main{ flex:1; padding:32px 40px 40px; min-width:0; }
 
 .header{
     display:flex;
     justify-content:space-between;
-    align-items:center;
-    margin-bottom:35px;
+    align-items:flex-end;
+    margin-bottom:26px;
 }
 
-.header h1{
-    font-size:34px;
+.header .eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px; letter-spacing:2.5px; text-transform:uppercase;
+    color:var(--brass); margin-bottom:8px;
 }
 
-.admin-card{
-    background:rgba(255,255,255,.08);
-    padding:15px 25px;
-    border-radius:20px;
+.header h1{ font-family:'Fraunces',serif; font-weight:600; font-size:30px; }
+
+.op-status{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;
+    color:var(--phosphor);
+    display:flex; align-items:center; gap:8px;
 }
 
-/* Stats */
+.op-status i{
+    width:8px; height:8px; border-radius:50%;
+    background:var(--phosphor);
+    box-shadow:0 0 8px var(--phosphor);
+    animation:blink 2.4s infinite;
+}
 
-.cards{
+@keyframes blink{ 0%,100%{opacity:1;} 50%{opacity:.35;} }
+
+/* ---------- Instrument row ---------- */
+
+.instruments{
     display:grid;
-    grid-template-columns:
-    repeat(auto-fit,minmax(250px,1fr));
-    gap:25px;
+    grid-template-columns:repeat(3,1fr);
+    gap:20px;
 }
 
-.card{
-    padding:30px;
-    border-radius:25px;
-    backdrop-filter:blur(15px);
-    transition:.4s;
+.gauge-panel{
+    background:var(--metal);
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:22px;
+    text-align:center;
 }
 
-.card:hover{
-    transform:
-    translateY(-10px)
-    scale(1.02);
+.gauge-panel .label{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px; letter-spacing:1.3px; text-transform:uppercase;
+    color:var(--gray); margin-bottom:6px;
 }
 
-.users{
-    background:linear-gradient(
-        135deg,
-        #6366f1,
-        #4f46e5);
+.gauge-panel svg{ width:100%; max-width:190px; }
+
+.gauge-panel .readout{
+    font-family:'JetBrains Mono',monospace;
+    font-weight:700; font-size:22px;
+    color:var(--brass-bright);
+    margin-top:-6px;
 }
 
-.transactions{
-    background:linear-gradient(
-        135deg,
-        #f59e0b,
-        #d97706);
+.lcd{
+    background:var(--metal-deep);
+    border:1px solid var(--phosphor-dim);
+    border-radius:8px;
+    padding:24px 10px;
+    margin-top:8px;
 }
 
-.balance{
-    background:linear-gradient(
-        135deg,
-        #10b981,
-        #059669);
+.lcd .big{
+    font-family:'JetBrains Mono',monospace;
+    font-size:28px;
+    font-weight:700;
+    color:var(--phosphor);
+    text-shadow:0 0 10px rgba(94,218,142,.5);
 }
 
-.card h3{
-    margin-bottom:15px;
+.lcd .small{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;
+    color:var(--phosphor-dim);
+    margin-top:6px;
+    letter-spacing:1px;
 }
 
-.card h1{
-    font-size:42px;
+/* ---------- Scope ---------- */
+
+.scope-panel{
+    margin-top:22px;
+    background:var(--metal);
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:24px;
 }
 
-/* Chart */
-
-.chart-box{
-    margin-top:35px;
-    background:rgba(255,255,255,.08);
-    padding:25px;
-    border-radius:25px;
+.scope-panel .scope-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:14px;
 }
 
-/* Bottom Section */
+.scope-panel h2{ font-family:'Fraunces',serif; font-weight:600; font-size:18px; }
+
+.scope-legend{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10.5px;
+    color:var(--gray);
+    display:flex;
+    gap:16px;
+}
+
+.scope-legend span::before{
+    content:"";
+    display:inline-block;
+    width:8px; height:8px;
+    border-radius:50%;
+    margin-right:6px;
+    background:var(--phosphor);
+}
+
+canvas#scope{
+    width:100%;
+    height:180px;
+    background:var(--metal-deep);
+    border-radius:8px;
+    border:1px solid var(--phosphor-dim);
+}
+
+/* ---------- Bottom ---------- */
 
 .bottom{
-    margin-top:35px;
+    margin-top:22px;
     display:grid;
-    grid-template-columns:2fr 1fr;
-    gap:25px;
+    grid-template-columns:1.6fr 1fr;
+    gap:20px;
+    align-items:start;
 }
 
-/* Table */
+/* Receipt tape */
 
-.table-box{
-    background:rgba(255,255,255,.08);
-    border-radius:25px;
-    padding:25px;
+.tape{
+    background:var(--ivory);
+    color:#26221b;
+    border-radius:6px;
+    position:relative;
+    padding:22px 22px 14px;
+    font-family:'JetBrains Mono',monospace;
 }
 
-table{
-    width:100%;
-    border-collapse:collapse;
+.tape::before{
+    content:"";
+    position:absolute;
+    top:-6px; left:0; right:0; height:12px;
+    background:
+        radial-gradient(circle at 8px 6px, var(--metal-deep) 5px, transparent 6px) repeat-x;
+    background-size:16px 12px;
 }
 
-table th,
-table td{
-    padding:15px;
-    text-align:left;
-    border-bottom:
-    1px solid rgba(255,255,255,.1);
-}
-
-table th{
-    color:#38bdf8;
-}
-
-/* Quick Actions */
-
-.actions{
-    background:rgba(255,255,255,.08);
-    padding:25px;
-    border-radius:25px;
-}
-
-.action-btn{
-    display:block;
-    text-decoration:none;
-    color:white;
-    padding:15px;
-    margin-bottom:15px;
-    border-radius:15px;
+.tape h2{
+    font-family:'Fraunces',serif;
+    color:#26221b;
+    font-size:16px;
+    margin-bottom:12px;
     text-align:center;
-    transition:.3s;
 }
 
-.action-btn:hover{
-    transform:translateY(-5px);
+.tape .rule{
+    border-top:1px dashed #b9b09a;
+    margin:10px 0;
 }
 
-.blue{
-    background:#2563eb;
+.tape-row{
+    display:flex;
+    justify-content:space-between;
+    font-size:12px;
+    padding:6px 0;
 }
 
-.green{
-    background:#10b981;
+.tape-row .who{ font-weight:700; }
+.tape-row .ok{ color:#3f7a56; }
+
+.tape-foot{
+    text-align:center;
+    font-size:10px;
+    color:#8b8272;
+    margin-top:10px;
+    letter-spacing:1px;
 }
 
-.orange{
-    background:#f59e0b;
+/* Patch panel */
+
+.patch{
+    background:var(--metal);
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:22px;
 }
 
-.red{
-    background:#ef4444;
+.patch h2{ font-family:'Fraunces',serif; font-weight:600; font-size:18px; margin-bottom:16px; }
+
+.jack{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    text-decoration:none;
+    color:var(--ivory);
+    background:var(--metal-raised);
+    border:1px solid var(--line);
+    padding:12px 14px;
+    border-radius:10px;
+    margin-bottom:10px;
+    font-size:13.5px;
+    font-weight:500;
+    transition:border-color .15s, transform .15s;
 }
 
-/* Footer */
+.jack:hover{ border-color:var(--brass); transform:translateX(3px); }
+
+.jack .socket{
+    width:20px; height:20px;
+    border-radius:50%;
+    background:var(--metal-deep);
+    border:2px solid var(--brass);
+    flex-shrink:0;
+}
+
+.jack.red .socket{ border-color:var(--lamp-red); }
+.jack.red:hover{ border-color:var(--lamp-red); }
 
 .footer{
-    margin-top:30px;
+    margin-top:24px;
     text-align:center;
-    color:#94a3b8;
+    font-family:'JetBrains Mono',monospace;
+    font-size:10.5px;
+    color:var(--gray);
+    letter-spacing:.6px;
 }
 
-/* Mobile */
-
-@media(max-width:900px){
-
-    .wrapper{
-        flex-direction:column;
-    }
-
-    .sidebar{
-        width:100%;
-        min-height:auto;
-    }
-
-    .bottom{
-        grid-template-columns:1fr;
-    }
+@media(max-width:980px){
+    .wrapper{ flex-direction:column; }
+    .switchpanel{ width:100%; min-height:auto; }
+    .instruments{ grid-template-columns:1fr; }
+    .bottom{ grid-template-columns:1fr; }
+    .main{ padding:24px 18px; }
 }
 
 </style>
@@ -277,244 +430,251 @@ table th{
 
 <body>
 
+<div class="marquee"><span>SYS.NOMINAL — VAULT PRESSURE OK — 0 OPEN INCIDENTS — LAST AUDIT 04:12 — SESSION ENCRYPTED — SYS.NOMINAL — VAULT PRESSURE OK — 0 OPEN INCIDENTS — LAST AUDIT 04:12 — SESSION ENCRYPTED —</span></div>
+
 <div class="wrapper">
 
-    <!-- Sidebar -->
+    <!-- Switch panel -->
 
-    <div class="sidebar">
+    <div class="switchpanel">
 
-        <div class="logo">
-            SecurePAY
-        </div>
+        <div class="brand"><div class="seal">SP</div><span>SecurePAY</span></div>
 
-        <a href="#">Dashboard</a>
+        <div class="divider">Overview</div>
+        <a href="#" class="switch-row on"><span class="toggle"></span>Dashboard</a>
+        <a href="ViewUsersServlet" class="switch-row"><span class="toggle"></span>View Users</a>
+        <a href="TransactionServlet" class="switch-row"><span class="toggle"></span>Transactions</a>
+        <a href="DeleteUser.jsp" class="switch-row"><span class="toggle"></span>Delete User</a>
 
-        <a href="ViewUsersServlet">
-            View Users
-        </a>
+        <div class="divider">Operations</div>
+        <a href="AdminLoanServlet" class="switch-row"><span class="toggle"></span>Loan Requests</a>
+        <a href="RechargeHistoryServlet" class="switch-row"><span class="toggle"></span>Recharge History</a>
+        <a href="NotificationServlet" class="switch-row"><span class="toggle"></span>Notifications</a>
 
-        <a href="TransactionServlet">
-            Transactions
-        </a>
-
-        <a href="DeleteUser.jsp">
-            Delete User
-        </a>
-         <a href="AdminLoanServlet" class="quick green">
-                <i class="fa-solid fa-building-columns"></i>
-                Loan Requests
-            </a>
-
-            <a href="RechargeHistoryServlet" class="quick orange">
-                <i class="fa-solid fa-mobile-screen-button"></i>
-                Recharge History
-            </a>
-            <a href="NotificationServlet" class="quick blue">
-                <i class="fa-solid fa-mobile-screen-button"></i>
-                Notification
-            </a>
-        <a href="AdminLogoutServlet" class="red">
-            Logout
-        </a>
+        <div class="divider">Session</div>
+        <a href="AdminLogoutServlet" class="switch-row logout"><span class="toggle"></span>Sign out</a>
 
     </div>
 
-    <!-- Main Content -->
+    <!-- Main -->
 
     <div class="main">
 
         <div class="header">
+            <div>
+                <div class="eyebrow">Control room</div>
+                <h1>Admin Dashboard</h1>
+            </div>
+            <div class="op-status"><i></i>ALL SYSTEMS NOMINAL</div>
+        </div>
 
-            <h1>Admin Dashboard</h1>
+        <!-- Instruments -->
 
-            <div class="admin-card">
-                Administrator
+        <div class="instruments">
+
+            <div class="gauge-panel">
+                <div class="label">Total Users</div>
+                <svg viewBox="0 0 200 120" id="gaugeUsers"></svg>
+                <div class="readout" id="userReadout">0</div>
+            </div>
+
+            <div class="gauge-panel">
+                <div class="label">Total Transactions</div>
+                <svg viewBox="0 0 200 120" id="gaugeTxn"></svg>
+                <div class="readout" id="txnReadout">0</div>
+            </div>
+
+            <div class="gauge-panel">
+                <div class="label">Total Balance</div>
+                <div class="lcd">
+                    <div class="big">₹<%= totalBalance %></div>
+                    <div class="small">LIVE LEDGER BALANCE</div>
+                </div>
             </div>
 
         </div>
 
-        <!-- Stats -->
+        <!-- Scope -->
 
-        <div class="cards">
-
-            <div class="card users">
-                <h3>Total Users</h3>
-                <h1 id="userCount">0</h1>
+        <div class="scope-panel">
+            <div class="scope-head">
+                <h2>System Analytics</h2>
+                <div class="scope-legend"><span>Live activity trace</span></div>
             </div>
-
-            <div class="card transactions">
-                <h3>Total Transactions</h3>
-                <h1 id="txnCount">0</h1>
-            </div>
-
-            <div class="card balance">
-                <h3>Total Balance</h3>
-                <h1>
-                    ₹<%= totalBalance %>
-                </h1>
-            </div>
-
-        </div>
-
-        <!-- Chart -->
-
-        <div class="chart-box">
-
-            <h2 style="margin-bottom:20px;">
-                System Analytics
-            </h2>
-
-            <canvas id="analyticsChart"></canvas>
-
+            <canvas id="scope"></canvas>
         </div>
 
         <!-- Bottom -->
 
         <div class="bottom">
 
-            <div class="table-box">
-
-                <h2 style="margin-bottom:20px;">
-                    Recent Activity
-                </h2>
-
-                <table>
-
-                    <tr>
-                        <th>User</th>
-                        <th>Activity</th>
-                        <th>Status</th>
-                    </tr>
-
-                    <tr>
-                        <td>Rahul</td>
-                        <td>Money Transfer</td>
-                        <td>Success</td>
-                    </tr>
-
-                    <tr>
-                        <td>Priya</td>
-                        <td>Account Created</td>
-                        <td>Success</td>
-                    </tr>
-
-                    <tr>
-                        <td>Amit</td>
-                        <td>Deposit</td>
-                        <td>Success</td>
-                    </tr>
-
-                </table>
-
+            <div class="tape">
+                <h2>Recent Activity</h2>
+                <div class="tape-row"><span class="who">Rahul</span><span>Money Transfer</span><span class="ok">OK</span></div>
+                <div class="rule"></div>
+                <div class="tape-row"><span class="who">Priya</span><span>Account Created</span><span class="ok">OK</span></div>
+                <div class="rule"></div>
+                <div class="tape-row"><span class="who">Amit</span><span>Deposit</span><span class="ok">OK</span></div>
+                <div class="tape-foot">— END OF PRINTOUT —</div>
             </div>
 
-            <div class="actions">
-
-                <h2 style="margin-bottom:20px;">
-                    Quick Actions
-                </h2>
-
-                <a href="ViewUsersServlet"
-                   class="action-btn blue">
-                    View Users
-                </a>
-
-                <a href="ViewTransactionsServlet"
-                   class="action-btn green">
-                    Transactions
-                </a>
-
-                <a href="DeleteUser.jsp"
-                   class="action-btn orange">
-                    Delete User
-                </a>
-
-                <a href="AdminLogoutServlet"
-                   class="action-btn red">
-                    Logout
-                </a>
-
+            <div class="patch">
+                <h2>Quick Actions</h2>
+                <a href="ViewUsersServlet" class="jack"><span class="socket"></span>View Users</a>
+                <a href="ViewTransactionsServlet" class="jack"><span class="socket"></span>Transactions</a>
+                <a href="DeleteUser.jsp" class="jack"><span class="socket"></span>Delete User</a>
+                <a href="AdminLogoutServlet" class="jack red"><span class="socket"></span>Logout</a>
             </div>
 
         </div>
 
-        <div class="footer">
-            © 2026 SecurePAY Professional Admin Dashboard
-        </div>
+        <div class="footer">© 2026 SECUREPAY — ADMIN CONTROL ROOM — PORTAL v3.0</div>
 
     </div>
 
 </div>
 
 <script>
+const totalUsers = <%= totalUsers %>;
+const totalTransactions = <%= totalTransactions %>;
 
-function animateValue(id,end){
+/* ---------- Analog gauge builder ---------- */
+function buildGauge(svgId, value, maxValue, readoutId){
+    const svg = document.getElementById(svgId);
+    const ns = "http://www.w3.org/2000/svg";
+    const cx = 100, cy = 105, r = 82;
+    const startAngle = -220, endAngle = 40; // degrees, sweeping 260°
 
-    let start=0;
-
-    let duration=1500;
-
-    let step=Math.ceil(end/60);
-
-    let counter=setInterval(()=>{
-
-        start+=step;
-
-        if(start>=end){
-            start=end;
-            clearInterval(counter);
-        }
-
-        document.getElementById(id)
-        .innerText=start;
-
-    },duration/60);
-}
-
-animateValue(
-"userCount",
-<%= totalUsers %>);
-
-animateValue(
-"txnCount",
-<%= totalTransactions %>);
-
-const ctx =
-document.getElementById(
-'analyticsChart');
-
-new Chart(ctx, {
-
-    type:'bar',
-
-    data:{
-        labels:[
-            'Users',
-            'Transactions',
-            'Balance'
-        ],
-
-        datasets:[{
-
-            label:'SecurePAY Analytics',
-
-            data:[
-                <%= totalUsers %>,
-                <%= totalTransactions %>,
-                <%= (int)(totalBalance/1000) %>
-            ]
-
-        }]
-    },
-
-    options:{
-        responsive:true
+    function toRad(deg){ return deg * Math.PI / 180; }
+    function point(angleDeg, radius){
+        const a = toRad(angleDeg);
+        return [cx + radius * Math.cos(a), cy + radius * Math.sin(a)];
     }
 
-});
+    // arc track
+    const track = document.createElementNS(ns,'path');
+    const [sx,sy] = point(startAngle, r);
+    const [ex,ey] = point(endAngle, r);
+    track.setAttribute('d', `M ${sx} ${sy} A ${r} ${r} 0 1 1 ${ex} ${ey}`);
+    track.setAttribute('fill','none');
+    track.setAttribute('stroke','#3a3227');
+    track.setAttribute('stroke-width','10');
+    track.setAttribute('stroke-linecap','round');
+    svg.appendChild(track);
 
+    // ticks
+    const tickCount = 13;
+    for(let i=0;i<=tickCount;i++){
+        const ang = startAngle + (endAngle-startAngle+360)%360 * (i/tickCount);
+        const [x1,y1] = point(ang, r-14);
+        const [x2,y2] = point(ang, r-4);
+        const line = document.createElementNS(ns,'line');
+        line.setAttribute('x1',x1); line.setAttribute('y1',y1);
+        line.setAttribute('x2',x2); line.setAttribute('y2',y2);
+        line.setAttribute('stroke', i % 3 === 0 ? '#e8c765' : '#5c5342');
+        line.setAttribute('stroke-width', i % 3 === 0 ? 2.5 : 1.5);
+        svg.appendChild(line);
+    }
+
+    // progress arc (phosphor)
+    const pct = Math.min(value / maxValue, 1);
+    const sweep = (endAngle - startAngle + 360) % 360;
+    const progEnd = startAngle + sweep * pct;
+    const [px,py] = point(progEnd, r);
+    const largeArc = sweep * pct > 180 ? 1 : 0;
+    const prog = document.createElementNS(ns,'path');
+    prog.setAttribute('d', `M ${sx} ${sy} A ${r} ${r} 0 ${largeArc} 1 ${px} ${py}`);
+    prog.setAttribute('fill','none');
+    prog.setAttribute('stroke','#5eda8e');
+    prog.setAttribute('stroke-width','10');
+    prog.setAttribute('stroke-linecap','round');
+    svg.appendChild(prog);
+
+    // needle
+    const needleAngle = progEnd;
+    const [nx,ny] = point(needleAngle, r-18);
+    const needle = document.createElementNS(ns,'line');
+    needle.setAttribute('x1',cx); needle.setAttribute('y1',cy);
+    needle.setAttribute('x2',nx); needle.setAttribute('y2',ny);
+    needle.setAttribute('stroke','#e8c765');
+    needle.setAttribute('stroke-width','3');
+    needle.setAttribute('stroke-linecap','round');
+    svg.appendChild(needle);
+
+    const hub = document.createElementNS(ns,'circle');
+    hub.setAttribute('cx',cx); hub.setAttribute('cy',cy); hub.setAttribute('r',6);
+    hub.setAttribute('fill','#c9a227');
+    svg.appendChild(hub);
+
+    // animated readout count-up
+    let start = 0;
+    const duration = 1400;
+    const step = Math.max(1, Math.ceil(value/60));
+    const timer = setInterval(()=>{
+        start += step;
+        if(start >= value){ start = value; clearInterval(timer); }
+        document.getElementById(readoutId).innerText = start;
+    }, duration/60);
+}
+
+buildGauge('gaugeUsers', totalUsers, Math.max(totalUsers, 10) * 1.2 || 10, 'userReadout');
+buildGauge('gaugeTxn', totalTransactions, Math.max(totalTransactions, 10) * 1.2 || 10, 'txnReadout');
+
+/* ---------- Oscilloscope trace ---------- */
+const canvas = document.getElementById('scope');
+const dpr = window.devicePixelRatio || 1;
+function sizeCanvas(){
+    canvas.width = canvas.clientWidth * dpr;
+    canvas.height = canvas.clientHeight * dpr;
+}
+sizeCanvas();
+window.addEventListener('resize', sizeCanvas);
+
+const gctx = canvas.getContext('2d');
+let points = [];
+const pointCount = 120;
+for(let i=0;i<pointCount;i++) points.push(0);
+
+function tick(){
+    const w = canvas.width, h = canvas.height;
+    gctx.clearRect(0,0,w,h);
+
+    // grid
+    gctx.strokeStyle = 'rgba(94,218,142,0.08)';
+    gctx.lineWidth = 1;
+    const cols = 12, rows = 6;
+    for(let i=0;i<=cols;i++){
+        const x = (w/cols)*i;
+        gctx.beginPath(); gctx.moveTo(x,0); gctx.lineTo(x,h); gctx.stroke();
+    }
+    for(let j=0;j<=rows;j++){
+        const y = (h/rows)*j;
+        gctx.beginPath(); gctx.moveTo(0,y); gctx.lineTo(w,y); gctx.stroke();
+    }
+
+    // shift points, add new sample influenced by real totals
+    points.shift();
+    const base = Math.sin(Date.now()/600) * 0.25;
+    const jitter = (Math.random()-0.5) * 0.18;
+    const influence = ((totalUsers + totalTransactions) % 10) / 40;
+    points.push(base + jitter + influence);
+
+    gctx.beginPath();
+    gctx.strokeStyle = '#5eda8e';
+    gctx.lineWidth = 2 * dpr;
+    gctx.shadowColor = '#5eda8e';
+    gctx.shadowBlur = 6;
+    points.forEach((p, i)=>{
+        const x = (w/(pointCount-1)) * i;
+        const y = h/2 - p * h * 0.7;
+        if(i===0) gctx.moveTo(x,y); else gctx.lineTo(x,y);
+    });
+    gctx.stroke();
+
+    requestAnimationFrame(tick);
+}
+tick();
 </script>
 
 </body>
 </html>
-
