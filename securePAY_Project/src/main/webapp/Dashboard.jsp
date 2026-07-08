@@ -148,6 +148,7 @@ a{color:inherit;}
   font-weight:500;
   border:1px solid transparent;
   transition:.15s ease;
+  position:relative;
 }
 .menu a svg{width:17px;height:17px;stroke:currentColor;fill:none;flex-shrink:0;opacity:.85;}
 .menu a:hover{
@@ -161,6 +162,36 @@ a{color:inherit;}
   margin-top:6px;
 }
 .menu a.primary:hover{background:#D8ECE3;}
+
+/* Chat unread badge on Support chat link */
+.chat-badge{
+  position:absolute;
+  top:8px;
+  right:10px;
+  min-width:19px;
+  height:19px;
+  padding:0 5px;
+  background:var(--danger);
+  color:#fff;
+  border-radius:50px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:10.5px;
+  font-weight:700;
+  border:2px solid var(--sidebar-bg);
+  font-family:'Inter',sans-serif;
+  animation:chatPulse 1.6s ease-in-out infinite;
+}
+
+@keyframes chatPulse{
+  0%,100%{ transform:scale(1); }
+  50%{ transform:scale(1.12); }
+}
+
+@media(prefers-reduced-motion: reduce){
+  .chat-badge{ animation:none; }
+}
 
 /* ============ Main ============ */
 .main{flex:1;padding:30px 38px 60px;max-width:1280px;}
@@ -334,6 +365,82 @@ a{color:inherit;}
 .promo-card.offer .tag{background:var(--accent-soft);color:var(--accent-dark);}
 .promo-card.loan .tag{background:#EDEAF7;color:#4B3F91;}
 .promo-card.rewardoffer .tag{background:var(--gold-soft);color:#8A7133;}
+
+/* ============ Shop & Order ============ */
+.shop-section{
+  margin-top:24px;
+}
+.shop-section-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  margin-bottom:14px;
+}
+.shop-section-head h2{
+  font-family:'Fraunces',serif;
+  font-size:20px;
+  font-weight:600;
+}
+.shop-section-head p{
+  font-size:12.5px;
+  color:var(--ink-faint);
+}
+
+.shop-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:14px;
+}
+
+.shop-card{
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  padding:20px;
+  border-radius:var(--radius-md);
+  text-decoration:none;
+  color:#fff;
+  min-height:130px;
+  overflow:hidden;
+  box-shadow:var(--shadow-card);
+  transition:transform .15s ease;
+}
+.shop-card:hover{transform:translateY(-3px);}
+
+.shop-card .shop-icon{
+  width:38px;height:38px;
+  border-radius:10px;
+  background:rgba(255,255,255,.18);
+  display:flex;align-items:center;justify-content:center;
+  margin-bottom:auto;
+}
+.shop-card .shop-icon svg{width:19px;height:19px;stroke:#fff;fill:none;}
+
+.shop-card .shop-name{
+  font-family:'Fraunces',serif;
+  font-size:16px;
+  font-weight:600;
+  margin-top:14px;
+}
+.shop-card .shop-tag{
+  font-size:11.5px;
+  opacity:.85;
+  margin-top:2px;
+}
+
+.shop-card.flipkart{background:linear-gradient(135deg,#2874F0,#1a56c4);}
+.shop-card.amazon{background:linear-gradient(135deg,#232F3E,#0d1117);}
+.shop-card.amazon .shop-tag{color:#FF9900;opacity:1;font-weight:600;}
+.shop-card.zomato{background:linear-gradient(135deg,#E23744,#b71c2b);}
+.shop-card.swiggy{background:linear-gradient(135deg,#FC8019,#d4650f);}
+
+@media(max-width:980px){
+  .shop-grid{grid-template-columns:repeat(2,1fr);}
+}
+@media(max-width:560px){
+  .shop-grid{grid-template-columns:1fr;}
+}
 
 /* ============ Content: card + quick actions ============ */
 .content{
@@ -753,9 +860,19 @@ Password
 <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.7 21a2 2 0 0 1-3.4 0"></path></svg>
 Notifications
 </a>
+<%
+Integer unreadChatCount = (Integer) session.getAttribute("unreadChatCount");
+%>
 <a href="chatbot.jsp" class="primary">
 <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.4 8.5 8.5 0 0 1-4-1L3 21l1.1-5.5A8.4 8.4 0 0 1 12.5 3a8.38 8.38 0 0 1 8.5 8.5Z"></path></svg>
 Support chat
+<%
+if(unreadChatCount != null && unreadChatCount > 0){
+%>
+<span class="chat-badge"><%= unreadChatCount > 9 ? "9+" : unreadChatCount %></span>
+<%
+}
+%>
 </a>
 
 </div>
@@ -843,6 +960,57 @@ Special offer: get ₹100 cashback on your first transfer today.
 <p>Earn double reward coins this weekend.</p>
 </div>
 
+</div>
+
+<div class="shop-section">
+  <div class="shop-section-head">
+    <h2>Shop &amp; order</h2>
+    <p>Partner offers · opens in a new tab</p>
+  </div>
+
+  <div class="shop-grid">
+
+    <a href="https://www.flipkart.com" target="_blank" rel="noopener" class="shop-card flipkart">
+      <div class="shop-icon">
+        <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6h15l-1.5 9h-12z"></path><circle cx="9" cy="20" r="1"></circle><circle cx="18" cy="20" r="1"></circle><path d="M6 6L4 3H2"></path></svg>
+      </div>
+      <div>
+        <div class="shop-name">Flipkart</div>
+        <div class="shop-tag">Shop electronics &amp; more</div>
+      </div>
+    </a>
+
+    <a href="https://www.amazon.in" target="_blank" rel="noopener" class="shop-card amazon">
+      <div class="shop-icon">
+        <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6h15l-1.5 9h-12z"></path><circle cx="9" cy="20" r="1"></circle><circle cx="18" cy="20" r="1"></circle><path d="M6 6L4 3H2"></path></svg>
+      </div>
+      <div>
+        <div class="shop-name">Amazon</div>
+        <div class="shop-tag">Today's deals</div>
+      </div>
+    </a>
+
+    <a href="https://www.zomato.com" target="_blank" rel="noopener" class="shop-card zomato">
+      <div class="shop-icon">
+        <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4Z"></path><line x1="6" y1="1" x2="6" y2="4"></line><line x1="10" y1="1" x2="10" y2="4"></line><line x1="14" y1="1" x2="14" y2="4"></line></svg>
+      </div>
+      <div>
+        <div class="shop-name">Zomato</div>
+        <div class="shop-tag">Order food nearby</div>
+      </div>
+    </a>
+
+    <a href="https://www.swiggy.com" target="_blank" rel="noopener" class="shop-card swiggy">
+      <div class="shop-icon">
+        <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4Z"></path><line x1="6" y1="1" x2="6" y2="4"></line><line x1="10" y1="1" x2="10" y2="4"></line><line x1="14" y1="1" x2="14" y2="4"></line></svg>
+      </div>
+      <div>
+        <div class="shop-name">Swiggy</div>
+        <div class="shop-tag">Fast delivery, hot food</div>
+      </div>
+    </a>
+
+  </div>
 </div>
 
 <div class="content">
